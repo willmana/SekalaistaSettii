@@ -12,7 +12,11 @@ import itemService from './services/items'
 import Gloves from './components/gloves'
 import Facemasks from './components/facemasks'
 import Beanies from './components/beanies'
+import Glove from './components/glove'
+import Facemask from './components/facemask'
+import Beanie from './components/beanie'
 import './App.css';
+// import manufacturerService from './services/manufacturer'
 
 
 const useSortableData = (items, config = null) => {
@@ -44,12 +48,28 @@ const useSortableData = (items, config = null) => {
   return { items: sortedItems, requestSort };
 }
 
+const parseAvailability = ({ json }) => {
+  if (json !== undefined) {
+    if (json.DATAPAYLOAD.includes('>INSTOCK<')) {
+      return 'In stock'
+    } else if (json.DATAPAYLOAD.includes('>OUTOFSTOCK<')) {
+      return 'Out of stock'
+    } else if (json.DATAPAYLOAD.includes('>LESSTHAN10<')) {
+      return 'Less than 10 in stock'
+    }
+  } else {
+    return 'No data available'
+  }
+
+}
+
 const App = () => {
   const [gloves, setGloves] = useState([])
   const [beanies, setBeanies] = useState([])
   const [facemasks, setFacemasks] = useState([])
   const [filter, setFilter] = useState('')
   const [showAll, setShowAll] = useState(true)
+
 
   const handleFilterChange = (event) => {
     event.preventDefault()
@@ -71,10 +91,12 @@ const App = () => {
       const data = await itemService.getBeanies()
       setBeanies(data)
     }
+
     renderGloves()
     renderFacemasks()
     renderBeanies()
   }, [])
+
 
 
   return (
@@ -94,15 +116,27 @@ const App = () => {
         </Navbar>
       </div>
       <Switch>
+        <Route path="/gloves/:id">
+          <Glove gloves={gloves} parseAvailability={parseAvailability} />
+        </Route>
         <Route path="/gloves">
-          <Gloves gloves={gloves} filter={filter} showAll={showAll} useSortableData={useSortableData}/>
+          <Gloves gloves={gloves} filter={filter} showAll={showAll} useSortableData={useSortableData} />
+        </Route>
+        <Route path="/facemasks/:id">
+          <Facemask facemasks={facemasks} parseAvailability={parseAvailability} />
         </Route>
         <Route path="/facemasks">
-          <Facemasks facemasks={facemasks} filter={filter} showAll={showAll} useSortableData={useSortableData}/>
+          <Facemasks facemasks={facemasks} filter={filter} showAll={showAll} useSortableData={useSortableData} />
+        </Route>
+        <Route path="/beanies/:id">
+          <Beanie beanies={beanies} parseAvailability={parseAvailability} />
         </Route>
         <Route path="/beanies">
-          <Beanies beanies={beanies} filter={filter} showAll={showAll} useSortableData={useSortableData}/>
+          <Beanies beanies={beanies} filter={filter} showAll={showAll} useSortableData={useSortableData} />
         </Route>
+
+
+
         <Route path="/" >
           <Jumbotron>
             <h1>Warehouse application</h1>
@@ -111,7 +145,10 @@ const App = () => {
               said products in tables. This application doesn't have pagination.
               It uses react-router so that user is able to switch easily from product category to another. It has built
               in filtering and user is also able to sort tables by product name. The application should be pretty
-              responsive considering the fact that each product category has almost 8000 items.
+              responsive considering the fact that each product category has almost 8000 items. For each item in the tables, there is 
+              a button from where user can check the availability of the item. The availability API is quite slow  to respond so it may take
+              10-30 seconds to get response from the server. This was also the reason why I chose to make calls to API only when user wanted 
+              to check availabilty to avoid long response times.
             </p>
           </Jumbotron>
         </Route>

@@ -1,6 +1,7 @@
 import React from 'react'
 import Table from 'react-bootstrap/Table'
 import Button from 'react-bootstrap/Button'
+import {Link} from 'react-router-dom'
 
 const Facemasks = ({ facemasks, showAll, filter, useSortableData }) => {
     const itemsToShow = showAll
@@ -29,6 +30,7 @@ const Facemasks = ({ facemasks, showAll, filter, useSortableData }) => {
                     <th>Color</th>
                     <th>Price</th>
                     <th>Manufacturer</th>
+                    <th>Availability</th>
                 </tr>
             </thead>
             <tbody>
@@ -43,6 +45,7 @@ const Facemasks = ({ facemasks, showAll, filter, useSortableData }) => {
 
                         <td>{mask.price}</td>
                         <td>{mask.manufacturer}</td>
+                        <td><Button as={Link} to={`/facemasks/${mask.id}`} variant="outline-secondary"> Check availability</Button></td>
                     </tr>)
                 )
 

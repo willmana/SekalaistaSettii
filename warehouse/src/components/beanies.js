@@ -1,6 +1,7 @@
 import React from 'react'
 import Table from 'react-bootstrap/Table'
 import Button from 'react-bootstrap/Button'
+import {Link} from 'react-router-dom'
 
 const Beanies = ({ beanies, showAll, filter, useSortableData }) => {
     const itemsToShow = showAll
@@ -29,6 +30,7 @@ const Beanies = ({ beanies, showAll, filter, useSortableData }) => {
                     <th>Color</th>
                     <th>Price</th>
                     <th>Manufacturer</th>
+                    <th>Availability</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,6 +43,7 @@ const Beanies = ({ beanies, showAll, filter, useSortableData }) => {
                             : <td>{beanie.color[0]}</td>}
                         <td>{beanie.price}</td>
                         <td>{beanie.manufacturer}</td>
+                        <td><Button as={Link} to={`/beanies/${beanie.id}`} variant="outline-secondary"> Check availability</Button></td>
                     </tr>)
                 )
 
